@@ -5,6 +5,7 @@ csvPath="/home/eva/Documents/InfoVisProject/Data/csv"
 resultFilePath="/home/eva/Documents/InfoVisProject/Data/cars.csv"
 
 cd /home/eva/Documents/InfoVisProject/Data
+rm data.robbi5.com/beezero-muc/index.html
 
 # get files from page
 wget --recursive --no-parent --no-clobber https://data.robbi5.com/beezero-muc/
@@ -21,14 +22,18 @@ echo timestamp,id,name,longitude,latitude,fuelLevel,lastAddress > $resultFilePat
 # insert timestamp, convert json to csv
 for file in $dataPath/*.json
 do
-	echo $file
-	# insert timestamp
+	#echo $file
 	filename=$(basename "$file")
 	timestamp="${filename%.*}"
-	grep -rl '{"id"' $file | xargs sed -i "s/{\"id\"/{\"timestamp\":\"$timestamp\",\"id\"/g"
-
-	# convert
-	/home/eva/go/bin/json2csv -k timestamp,id,name,coordinate.longitude,coordinate.latitude,fuelLevel,lastAddress -i $file -o $file.csv
+	if [ ! -f "$csvPath/$timestamp.json.csv" ] 
+	then
+		echo $filename 
+		# insert timestamp
+		grep -rl '{"id"' $file | xargs sed -i "s/{\"id\"/{\"timestamp\":\"$timestamp\",\"id\"/g"
+	
+		# convert
+		/home/eva/go/bin/json2csv -k timestamp,id,name,coordinate.longitude,coordinate.latitude,fuelLevel,lastAddress -i $file -o $file.csv #-p
+	fi
 done
 
 # move csv files to different folder
