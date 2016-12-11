@@ -28,7 +28,7 @@ class DBHandler
      */
     function ensureCarsTable(){
         if($this->connection){
-          $query = "SELECT * FROM cars";
+          $query = "SELECT * FROM cars_data";
           return mysqli_query($this->connection, $query);
         }
         return false;
@@ -39,7 +39,7 @@ class DBHandler
      */
     function fetchAll(){
         $cars = array();
-        $query = "SELECT * FROM cars";
+        $query = "SELECT * FROM cars_data";
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_assoc()) {
           $cars[] = $row;
@@ -57,9 +57,12 @@ class DBHandler
      */
     function fetchCarsWeekdayHour(){
         $cars = array();
-        $query = "SELECT COUNT(*) AS VALUE, HOUR, WEEKDAY
-                      FROM cars
-                      GROUP BY HOUR, WEEKDAY";
+        /*$query = "SELECT COUNT(*) AS VALUE, HOUR, WEEKDAY
+                      FROM cars_data
+                      GROUP BY HOUR, WEEKDAY";*/
+	$query = "select avg(number) as VALUE, HOUR, WEEKDAY from ( SELECT COUNT(*) AS number, minute, HOUR, DAY, month, date, weekday
+                      FROM cars_data
+                      GROUP BY minute, HOUR, DAY, month, date) temp group by hour, weekday";
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_assoc()) {
           $cars[] = $row;
@@ -72,9 +75,9 @@ class DBHandler
     */
     function fetchAllCars(){
         $cars = array();
-        $query = "SELECT AUTONAME
-                      FROM cars
-                      GROUP BY AUTONAME";
+        $query = "SELECT NAME
+                      FROM cars_data
+                      GROUP BY NAME";
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_row()) {
           $cars[] = $row;

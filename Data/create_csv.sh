@@ -2,13 +2,16 @@
 
 dataPath="/home/eva/Documents/InfoVis/data.robbi5.com/beezero-muc"
 csvPath="/home/eva/Documents/InfoVis/csv"
-resultFilePath="/home/eva/Documents/InfoVis/InfoVisProject/Data/cars.csv"
+resultFilePath="/home/eva/Documents/InfoVis/InfoVisProject/Data/cars_data.csv"
 
 cd /home/eva/Documents/InfoVis
 rm data.robbi5.com/beezero-muc/index.html
 
 # get files from page
-wget --recursive --no-parent --no-clobber https://data.robbi5.com/beezero-muc/
+#wget --recursive --no-parent --no-clobber https://data.robbi5.com/beezero-muc/
+
+# doppelte Files am 30.10. um 2 Uhr löschen
+rm data.robbi5.com/beezero-muc/2016-10-30T02\:*200.json
 
 # prepare jason files
 grep -lr '{"success":true,"response":{"availableVehicles":\[{' $dataPath/ | xargs sed -i 's/{"success":true,"response":{"availableVehicles":\[{/{/g'
@@ -50,4 +53,4 @@ mv $dataPath/*.csv $csvPath
 cat $csvPath/*.csv >> $resultFilePath
 
 # in Datenbank importieren, tabelle muss wie filename.csv heißen
-#mysqlimport --ignore-lines=1 --fields-terminated-by=, --verbose --local -u InfoVis -p InfoVis /home/eva/Documents/InfoVis/cars_data.csv
+mysqlimport --ignore-lines=1 --fields-terminated-by=, --verbose --delete --local -u InfoVis -p InfoVis $resultFilePath
