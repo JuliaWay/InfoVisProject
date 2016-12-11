@@ -1,10 +1,10 @@
 #!/bin/bash
 
-dataPath="/home/eva/Documents/InfoVisProject/Data/data.robbi5.com/beezero-muc"
-csvPath="/home/eva/Documents/InfoVisProject/Data/csv"
-resultFilePath="/home/eva/Documents/InfoVisProject/Data/cars.csv"
+dataPath="/home/eva/Documents/InfoVis/data.robbi5.com/beezero-muc"
+csvPath="/home/eva/Documents/InfoVis/csv"
+resultFilePath="/home/eva/Documents/InfoVis/InfoVisProject/Data/cars.csv"
 
-cd /home/eva/Documents/InfoVisProject/Data
+cd /home/eva/Documents/InfoVis
 rm data.robbi5.com/beezero-muc/index.html
 
 # get files from page
@@ -17,7 +17,7 @@ grep -lr '},{' $dataPath/ | xargs sed -i 's/},{/}\n{/g'
 
 # prepare cars.csv
 rm $resultFilePath
-echo timestamp,id,name,longitude,latitude,fuelLevel,lastAddress > $resultFilePath
+echo date,day,month,hour,minute,weekday,auto_id,name,longitude,latitude,fuelLevel,lastAddress > $resultFilePath
 
 # insert timestamp, convert json to csv
 for file in $dataPath/*.json
@@ -28,11 +28,18 @@ do
 	if [ ! -f "$csvPath/$timestamp.json.csv" ] 
 	then
 		echo $filename 
-		# insert timestamp
-		grep -rl '{"id"' $file | xargs sed -i "s/{\"id\"/{\"timestamp\":\"$timestamp\",\"id\"/g"
+		# insert date
+		date=$( date -d $timestamp +"%F")
+		day=$( date -d $timestamp +"%d")
+		month=$( date -d $timestamp +"%m")
+		hour=$( date -d $timestamp +"%H")
+		minute=$( date -d $timestamp +"%M")
+		weekday=$( date -d $timestamp +"%u")
+		#dateColumns= "{\"date\":\"$date\",\"day\":\"$day\",\"month\":\"$month\",\"hour\":\"$hour\",\"minute\":\"$minute\",\"weekday\":\"$weekday\",\"id\""
+		grep -rl '{"id"' $file | xargs sed -i "s/{\"id\"/{\"date\":\"$date\",\"day\":\"$day\",\"month\":\"$month\",\"hour\":\"$hour\",\"minute\":\"$minute\",\"weekday\":\"$weekday\",\"id\"/g"
 	
 		# convert
-		/home/eva/go/bin/json2csv -k timestamp,id,name,coordinate.longitude,coordinate.latitude,fuelLevel,lastAddress -i $file -o $file.csv #-p
+		/home/eva/go/bin/json2csv -k date,day,month,hour,minute,weekday,id,name,coordinate.longitude,coordinate.latitude,fuelLevel,lastAddress -i $file -o $file.csv #-p
 	fi
 done
 
@@ -41,3 +48,6 @@ mv $dataPath/*.csv $csvPath
 
 # each file into one
 cat $csvPath/*.csv >> $resultFilePath
+
+# in Datenbank importieren, tabelle muss wie filename.csv heißen
+#mysqlimport --ignore-lines=1 --fields-terminated-by=, --verbose --local -u InfoVis -p InfoVis /home/eva/Documents/InfoVis/cars_data.csv
