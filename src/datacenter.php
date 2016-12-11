@@ -35,17 +35,36 @@ error_reporting(E_ERROR);
 
   // now, let's see whether the user has submitted the form
 
-
+/*
+  chart data
+*/
   if(isset($_GET['data'])){
-      $cars = $dbHandler->fetchCarsWeekdayHour();
-      if($cars){
-          echo json_encode($cars);
+      $data = $dbHandler->fetchCarsWeekdayHour();
+      if($data){
           $fp = fopen('data.json', 'w');
-          fwrite($fp, json_encode($cars));
+          fwrite($fp, json_encode($data));
           fclose($fp);
+          $response = ['data'];
+          echo json_encode($response);
         }else{
-          echo "Faiiiiilll</br>";
+          echo json_encode($failureObj);
         }
+
+  /*
+   cars data
+  */
+  }else if(isset($_GET['cars'])){
+    $cars = $dbHandler->fetchAllCars();
+    if($cars){
+      $all= array('All');
+      foreach($cars as $car){
+        $all = array_merge($all,$car);
+      }
+      $cars = array('cars' => $all);
+        echo json_encode($cars);
+      }else{
+        echo json_encode($failureObj);
+      }
   } else {
       echo json_encode($failureObj);
   }

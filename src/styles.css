@@ -15,7 +15,6 @@ body{
   justify-content: space-evenly;
   position: absolute;
   height: 100%;
-  width: 100%;
   font-family: var(--font-family);
 }
 

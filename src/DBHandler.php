@@ -62,6 +62,21 @@ class DBHandler
         return $cars;
     }
 
+    /*
+    gets names of all the cars
+    */
+    function fetchAllCars(){
+        $cars = array();
+        $query = "SELECT AUTONAME
+                      FROM cars
+                      GROUP BY AUTONAME";
+        $res = mysqli_query($this->connection,$query);
+        while ($row = $res->fetch_row()) {
+          $cars[] = $row;
+        }
+        return $cars;
+    }
+
     /**
      * useful to sanitize data before trying to insert it into the database.
      * @param $string String to be escaped from malicious SQL statements
