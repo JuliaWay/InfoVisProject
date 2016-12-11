@@ -49,6 +49,11 @@ class DBHandler
 
     /**
      * @return array of all rows grouped by weekday and hour()
+     *right query
+     *SELECT SUM(sub.CARS)/COUNT(sub.CARS) AS VALUE, sub.HOUR, sub.WEEKDAY FROM
+     *(SELECT COUNT(`ID`) AS CARS, `DATE`, `HOUR`, `WEEKDAY` FROM `cars` GROUP BY `HOUR`, `DATE`)
+     *sub GROUP BY sub.WEEKDAY, sub.HOUR
+     *
      */
     function fetchCarsWeekdayHour(){
         $cars = array();
@@ -57,6 +62,21 @@ class DBHandler
                       GROUP BY HOUR, WEEKDAY";
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_assoc()) {
+          $cars[] = $row;
+        }
+        return $cars;
+    }
+
+    /*
+    gets names of all the cars
+    */
+    function fetchAllCars(){
+        $cars = array();
+        $query = "SELECT AUTONAME
+                      FROM cars
+                      GROUP BY AUTONAME";
+        $res = mysqli_query($this->connection,$query);
+        while ($row = $res->fetch_row()) {
           $cars[] = $row;
         }
         return $cars;

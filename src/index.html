@@ -7,9 +7,13 @@
   </head>
   <body>
 
+  <div id="content">
+    <div id="header"><span>When to bee free</span></div>
     <div id="chart"></div>
-    <div id="dataset-picker">
+    <div id="controls">
     </div>
+    <div id="footer"> Braß & Wayrauther Productions®</div>
+  </div>
     <script type="text/javascript">
 
 
@@ -19,42 +23,51 @@
         gridSize = Math.floor(width / 24),
         legendElementWidth = gridSize*2,
         buckets = 9,
+        request = ['cars', 'zones', 'data'],
         colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
         days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa","So"],
+        cars = ["Alle","Berty" , "Tobi", "Hans"],
+        zones = ["Alle"],
         times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
          "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"],
         datasets = ["data.json"];
 
 
     document.addEventListener('DOMContentLoaded', function () {
-      var XMLHTTP = new XMLHttpRequest();
 
       /*
-        HTTP Request to load the data
+        HTTP Request to load the chart data
       */
-      var loadData = function(){
-        console.log('load');
-          XMLHTTP.open('GET', "http://localhost/InfoVisProject/src/datacenter.php?data=data");
+      var loadData = function(data){
+        var XMLHTTP = new XMLHttpRequest();
+          XMLHTTP.open('GET', "http://localhost/InfoVisProject/src/datacenter.php?" + data);
           XMLHTTP.send();
+          XMLHTTP.addEventListener('readystatechange', function(){
+            if(XMLHTTP.readyState === 0){
+            }else if(XMLHTTP.readyState === 1){
+            }else if(XMLHTTP.readyState === 2){
+            }else if(XMLHTTP.readyState === 3){
+            }else if(XMLHTTP.readyState === 4){
+              var res = JSON.parse(XMLHTTP.responseText);
+                if(res.cars){
+                  //car names
+                  cars = res.cars;
+                  addCarOptions();
+                }else if(res === request[1]){
+                  //zone names
+                }
+                else if(res[0] === request[2]){
+                  //load chart
+                  heatmapChart();
+                }else{
+                  console.log("ERROR: WRONG REQUEST")
+                }
+            }
+          },false);
       };
 
-      XMLHTTP.addEventListener('readystatechange', function(){
-        if(XMLHTTP.readyState === 0){
-        }else if(XMLHTTP.readyState === 1){
-        }else if(XMLHTTP.readyState === 2){
-        }else if(XMLHTTP.readyState === 3){
-        }else if(XMLHTTP.readyState === 4){
-          var res = XMLHTTP.responseText;
-          if(res){
-            var data = res;
-            //call to display the data
-            heatmapChart();
-          }else{
-            console.log("No response");
-          }
-        }
-      },false);
 
+      loadData(request[0]);
 
       var svg = d3.select("#chart").append("svg")
           .attr("width", width + margin.left + margin.right)
@@ -144,10 +157,57 @@
       };
 
 
+
+      var selects = d3.select("#controls").append("div")
+                      .attr("class", "selects");
+      /*
+        Cars drop down
+      */
+      var chooseCar = selects.append("div");
+
+      var carLabel = chooseCar.append("span")
+                        .data(['Select Car'])
+                        .attr('class', 'select-lable')
+                        .text(function(d){ return d;});
+
+      var selectCars  = chooseCar.append("select").on("change", function (d){
+        return d;
+      });
+
+      var addCarOptions = function(){
+        var options = selectCars.selectAll('option').data(cars);
+            // Enter selection
+            options.enter()
+                    .append("option")
+                    .text(function(d) { return d; })
+                    .attr("value", function (d) { return d; });
+      }
+
+      /*
+        Zones drop down
+      */
+      var chooseZone = selects.append("div");
+
+      var zoneLabel = chooseZone.append("span")
+                        .data(['Select Zone'])
+                        .attr('class', 'select-lable')
+                        .text(function(d){ return d;});
+
+      var selectZones  = chooseZone.append("select").on("change", function (d){
+        return d;
+      });
+
+      var options = selectZones.selectAll('option').data(zones);
+          // Enter selection
+          options.enter()
+                  .append("option")
+                  .text(function(d) { return d; })
+                  .attr("value", function (d) { return d; });
+
       /*
         Reload button
       */
-      var datasetpicker = d3.select("#dataset-picker").selectAll(".dataset-button")
+      var datasetpicker = d3.select("#controls").selectAll(".dataset-button")
         .data(datasets);
 
       datasetpicker.enter()
@@ -162,7 +222,7 @@
         /*
           Button to load the data
         */
-        d3.select("body")
+        d3.select("#controls")
           .selectAll(".loaddata-button")
           .data(["Load Data"])
           .enter()
@@ -172,7 +232,9 @@
           })
           .attr("type", "button")
           .attr("class", "loaddata-button")
-          .on("click", loadData);
+          .on("click", function () {
+            return loadData(request[2]);
+          });
 
       });
     </script>

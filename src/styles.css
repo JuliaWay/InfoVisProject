@@ -1,3 +1,96 @@
+
+body{
+  margin: 0;
+}
+:root {
+  --font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  --main-font-color: #69d3ea;
+  --main-bg-color: #2f2f2f;
+  --char-color: #626a74;
+  --main-border-color: rgb(35, 34, 34);
+}
+#content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  position: absolute;
+  height: 100%;
+  font-family: var(--font-family);
+}
+
+#header {
+border-bottom: 2px solid var(--main-border-color);
+line-height: 50px;
+padding-left: 20px;
+font-size: 30px;
+font-weight: bolder;
+background-color: var(--main-bg-color);
+color: var(--main-font-color);
+}
+
+#footer {
+  border-top: 2px solid var(--main-border-color);
+  line-height: 40px;
+  text-align: right;
+  padding-right: 20px;
+  background-color: var(--main-bg-color);
+  color: #c5c9a1;
+}
+
+#controls {
+    display: flex;
+    background-color: var(--main-bg-color);
+    color: var(--main-font-color);
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 2px solid var(--main-border-color);
+}
+
+
+.selects {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.selects > div {
+  margin-right: 30px;
+}
+.select-lable{
+  margin-right: 5px;
+}
+
+#chart {
+  padding: 20px 40px;
+   background-color: var(--char-color);
+}
+
+input[type='button']{
+  line-height: 25px;
+  border-radius: 10px;
+  background-color: #acffff;
+  font-size: 15px;
+}
+
+input[type='button']:hover{
+  background-color: #68ffff;
+}
+
+input[type='button']:active{
+  background-color: #3b7777;
+}
+
+select {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  height: 30px;
+  border-radius: 10px;
+  width: 100px;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+
 rect.bordered {
   stroke: #E6E6E6;
   stroke-width:2px;
