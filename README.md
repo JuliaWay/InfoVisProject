@@ -10,3 +10,11 @@ http://bl.ocks.org/tjdecke/5558084
 
 
 JSON to TSV Converter: http://codebeautify.org/json-to-tsv-converter
+
+
+# index.html
+eigentlichen Application mit D3.js
+# datacenter.php
+ Zieht Daten aus der DB mit Hilfer des DBHandler.php und dem connectionInfo.php
+# dbstructure.pdf
+ Struktur der Datenbank (gerne noch mit longitude, fuellevel... etc)
