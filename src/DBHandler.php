@@ -49,6 +49,11 @@ class DBHandler
 
     /**
      * @return array of all rows grouped by weekday and hour()
+     *right query
+     *SELECT SUM(sub.CARS)/COUNT(sub.CARS) AS VALUE, sub.HOUR, sub.WEEKDAY FROM
+     *(SELECT COUNT(`ID`) AS CARS, `DATE`, `HOUR`, `WEEKDAY` FROM `cars` GROUP BY `HOUR`, `DATE`)
+     *sub GROUP BY sub.WEEKDAY, sub.HOUR
+     *
      */
     function fetchCarsWeekdayHour(){
         $cars = array();
