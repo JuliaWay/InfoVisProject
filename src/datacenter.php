@@ -47,23 +47,38 @@ error_reporting(E_ERROR);
           $response = ['data'];
           echo json_encode($response);
         }else{
-          echo json_encode($failureObj);
+          echo json_encode('Bad "fetchCarsWeekdayHour" query...');
         }
 
-  /*
-   cars data
+  }/*
+    chart data per car
   */
-  }else if(isset($_GET['cars'])){
+    else if(isset($_GET['name'])){
+        $data = $dbHandler->fetchDataPerCar($_GET['name']);
+        if($data){
+            $fp = fopen('data.json', 'w');
+            fwrite($fp, json_encode($data));
+            fclose($fp);
+            $response = ['data'];
+            echo json_encode($response);
+          }else{
+            echo json_encode('Bad "fetchCarsWeekdayHour" query...');
+          }
+
+    /*
+     cars data
+    */
+    }else if(isset($_GET['cars'])){
     $cars = $dbHandler->fetchAllCars();
     if($cars){
-      $all= array('All');
+      $all= array('Alle');
       foreach($cars as $car){
         $all = array_merge($all,$car);
       }
       $cars = array('cars' => $all);
         echo json_encode($cars);
       }else{
-        echo json_encode($failureObj);
+        echo json_encode('Bad "fetchAllCars" query...');
       }
   } else {
       echo json_encode($failureObj);
