@@ -48,7 +48,6 @@
           XMLHTTP.send();
           XMLHTTP.addEventListener('readystatechange', function(){
             if(XMLHTTP.readyState === 0){
-              hide();
             }else if(XMLHTTP.readyState === 1){
             }else if(XMLHTTP.readyState === 2){
             }else if(XMLHTTP.readyState === 3){
@@ -69,7 +68,6 @@
                 }else {
                   console.log("ERROR: WRONG REQUEST");
                 }
-                show();
             }
           },false);
       };
