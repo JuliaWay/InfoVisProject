@@ -50,6 +50,11 @@ color: var(--main-font-color);
   color: #c5c9a1;
 }
 
+#explanation{
+  margin: 10px 20px 5px 20px;
+  font-size: small;
+}
+
 #controls {
     display: flex;
     background-color: var(--main-bg-color);
@@ -75,7 +80,7 @@ color: var(--main-font-color);
 }
 
 #chart {
-  padding: 20px 40px;
+  padding: 20px 40px 5px 40px;
    background-color: var(--char-color);
 }
 

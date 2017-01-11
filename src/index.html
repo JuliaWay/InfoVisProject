@@ -9,7 +9,8 @@
 
   <div id="content">
     <div id="header"><span>When to bee free</span></div>
-    <div id="description">Durchschnittliche Verfügbarkeit aller Autos über die Woche</div>
+        <div id="explanation">Basierend auf den Daten von Beezero Car Sharing wird die prozentuale Verfügbarkeit aller und einzelner Autos berechnet und angezeigt. Dabei bedeutet ein Wert von 100%, dass alle oder ein Auto in diesem Zeitraum immer zur Verfügung standen. Während eine Verfügbarkeit von z.B. 50% aussagt, dass im Falle eines Auto dieses nur zur Hälfte der Zeit verfügbar war oder im Falle aller Autos nur die Hälfte der Autos bereitstanden. </div>
+    <div id="description">Wochenüberblick über die Verfügbarkeit aller Autos in Prozent:</div>
     <div id="chart"></div>
     <div id="controls">
     </div>
@@ -18,14 +19,12 @@
     <script type="text/javascript">
 
 
-    var margin = { top: 50, right: 0, bottom: 100, left: 30 },
+    var margin = { top: 30, right: 0, bottom: 50, left: 30 },
         width = 960 - margin.left - margin.right,
-        height = 430 - margin.top - margin.bottom,
+        height = 380 - margin.top - margin.bottom,
         gridSize = Math.floor(width / 24),
         legendElementWidth = gridSize*2,
         buckets = 9,
-        desc=['Durchschnittliche Verfügbarkeit aller Autos über die Woche',
-      'Durchschnittliche Verfügbarkeit des gewählten Autos über die Woche'],
         request = ['cars', 'zones', 'data', 'name'],
         colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
         days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa","So"],
@@ -73,7 +72,10 @@
       };
 
 
+      //cars are loaded
       loadData(request[0]);
+
+      //all cars data is loaded
       loadData(request[2]);
 
 
@@ -115,8 +117,9 @@
       var heatmapChart = function() {
         d3.json(datasets[0],
         function(data) {
+          //d3.max(data, function (d) { return d.VALUE; })
           var colorScale = d3.scale.quantile()
-              .domain([0, buckets - 1, d3.max(data, function (d) { return d.VALUE; })])
+              .domain([50, 10, 100])
               .range(colors);
           var cards = svg.selectAll(".hour")
               .data(data, function(d) {return d.WEEKDAY+':'+d.HOUR;});
@@ -136,7 +139,7 @@
           cards.transition().duration(1000)
               .style("fill", function(d) { return colorScale(d.VALUE); });
 
-          cards.select("title").text(function(d) { return d.VALUE; });
+          cards.select("title").text(function(d) { return d.VALUE  + ' %'; });
 
           cards.exit().remove();
 
@@ -155,7 +158,7 @@
 
           legend.append("text")
             .attr("class", "mono")
-            .text(function(d) { return "≥ " + Math.round(d); })
+            .text(function(d) { return "≥ " + Math.round(d) + ' %'; })
             .attr("x", function(d, i) { return legendElementWidth * i; })
             .attr("y", height + gridSize);
 
@@ -182,10 +185,10 @@
         var name = d3.select(this).property('value');
         if(name===cars[0]){
           loadData(request[2]);
-          document.querySelector('#description').innerHTML = desc[0];
+          document.querySelector('#description').innerHTML = 'Wochenüberblick über die Verfügbarkeit aller Autos in Prozent:';
         }else{
           loadData(request[3]+'='+name);
-          document.querySelector('#description').innerHTML = desc[1];
+          document.querySelector('#description').innerHTML = "Wochenüberblick über die Verfügbarkeit des Autos '" + name + "' in Prozent:" ;
         }
         return d;
       });
@@ -198,10 +201,10 @@
                     .text(function(d) { return d; })
                     .attr("value", function (d) { return d; });
       }
+/**
 
-      /*
         Zones drop down
-      */
+
       var chooseZone = selects.append("div");
 
       var zoneLabel = chooseZone.append("span")
@@ -219,9 +222,7 @@
                   .append("option")
                   .text(function(d) { return d; })
                   .attr("value", function (d) { return d; });
-
-
-
+*/
       });
     </script>
 

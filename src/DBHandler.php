@@ -57,11 +57,11 @@ class DBHandler
      */
     function fetchDataPerCar($carname){
         $cars = array();
-	$query = 'SELECT sum(number) as VALUE, HOUR, WEEKDAY from
+	$query = 'SELECT round((sum(number)/11)*100,2) as VALUE, HOUR, WEEKDAY from
             ( SELECT COUNT(*) / 12 AS number, HOUR, DAY, month, weekday
                       FROM cars_data
                       WHERE  name = "' . $carname .'"
-                      GROUP BY HOUR, DAY, month) temp group by hour, weekday';
+                      GROUP BY HOUR, DAY, month) temp GROUP BY hour, weekday';
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_assoc()) {
           $cars[] = $row;
@@ -76,20 +76,14 @@ class DBHandler
     /**
      * @return array of all rows grouped by weekday and hour()
      *right query
-     *SELECT SUM(sub.CARS)/COUNT(sub.CARS) AS VALUE, sub.HOUR, sub.WEEKDAY FROM
-     *(SELECT COUNT(`ID`) AS CARS, `DATE`, `HOUR`, `WEEKDAY` FROM `cars` GROUP BY `HOUR`, `DATE`)
-     *sub GROUP BY sub.WEEKDAY, sub.HOUR
      *
      */
     function fetchCarsWeekdayHour(){
         $cars = array();
-        /*$query = "SELECT COUNT(*) AS VALUE, HOUR, WEEKDAY
-                      FROM cars_data
-                      GROUP BY HOUR, WEEKDAY";*/
-	$query = 'SELECT sum(number) as VALUE, HOUR, WEEKDAY from
+	       $query = 'SELECT round(sum(number)/(11*46)*100,2) as VALUE, HOUR, WEEKDAY from
             ( SELECT COUNT(*) / 12 AS number, HOUR, DAY, month, weekday
                       FROM cars_data
-                      GROUP BY HOUR, DAY, month) temp group by hour, weekday';
+                      GROUP BY HOUR, DAY, month) temp GROUP BY hour, weekday';
         $res = mysqli_query($this->connection,$query);
         while ($row = $res->fetch_assoc()) {
           $cars[] = $row;
@@ -109,6 +103,7 @@ class DBHandler
         while ($row = $res->fetch_row()) {
           $cars[] = $row;
         }
+
         return $cars;
     }
 
